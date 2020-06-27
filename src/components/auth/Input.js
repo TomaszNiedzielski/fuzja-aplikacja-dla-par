@@ -5,19 +5,21 @@ const Input = props => {
     return (
         <TextInput
             style={ styles.input }        
-            placeholder={ props.placeholder }
             onChangeText={ text => {props.onChangeTextHandler(text)} }
+            autoCapitalize="none"
+            placeholderTextColor="white"
+            {...props}
         />
     );
 }
 
 const styles = StyleSheet.create({
     input: {
-        width: '90%',
+        width: '100%',
         borderBottomWidth: 3,
         borderColor: 'white',
         padding: 17,
-        fontSize: 22,
+        fontSize: 20,
         marginVertical: 10,
         color: 'white'
     }

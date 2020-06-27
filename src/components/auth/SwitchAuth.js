@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableWithoutFeedback, View, Text, StyleSheet } from 'react-native';
+import { TouchableWithoutFeedback, Text, StyleSheet } from 'react-native';
 
 const Button = props => {
     return (
@@ -8,7 +8,7 @@ const Button = props => {
                 props.onPressHandler(props.title)
             } }
         >
-            <Text style={ [styles.title, (props.sign === props.title ? styles.underline : '')] }> { props.title } </Text>
+            <Text style={ [styles.title, (props.sign === props.title ? styles.underline : '')] }> { props.text } </Text>
         </TouchableWithoutFeedback>
     );
 };
@@ -19,7 +19,6 @@ const styles = StyleSheet.create({
         color: 'white',
     },
     underline: {
-        marginHorizontal: 15,
         borderBottomWidth: 4,
         borderBottomColor: 'white',
     }

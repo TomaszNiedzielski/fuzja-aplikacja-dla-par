@@ -1,5 +1,6 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import colors from '../../../constans/colors';
 
 const SignButton = props => {
     return (
@@ -7,27 +8,33 @@ const SignButton = props => {
             style={ styles.button }
             onPress={props.onPressHandler}
         >
-            <Text style={ styles.title }>
-                { props.title }
-            </Text>
+            { (props.loadingButton === false 
+                ? <Text style={ styles.title }>{props.title}</Text>
+                : <ActivityIndicator 
+                    color={colors.primary}
+                />) 
+            }
         </TouchableOpacity>
     );
 };
 
 const styles = StyleSheet.create({
     button: {
-        width: '80%',
+        width: '100%',
+        height: 60,
         padding: 16,
         borderColor: 'white',
         borderWidth: 3,
         borderRadius: 50,
         marginVertical: 25,
+        justifyContent: 'center',
+        backgroundColor: 'white'
     },
     title: {
-        fontSize: 22,
+        fontSize: 20,
         textAlign: 'center',
-        color: 'white',
-        fontWeight: 'bold'
+        color: '#f22135',
+        fontWeight: 'bold',
     }
 });
 

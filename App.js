@@ -1,36 +1,46 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-
+import { StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { navigationRef } from './navigation/RootNavigation';
 
-import { Provider } from 'react-redux';
-import { createStore, combineReducers, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
-import authReducer from './store/reducers/auth';
-
 import LoadingScreen from './src/screens/LoadingScreen';
-import AuthScreen from './src/screens/AuthScreen';
-import SearchPartnerScreen from './src/screens/SearchPartnerScreen';
+import AuthScreen from './src/screens/auth/AuthScreen';
+import SearchPartnerScreen from './src/screens/auth/SearchPartnerScreen';
+import WaitingForPartnerScreen from './src/screens/auth/WaitingForPartnerScreen';
+import NavigatorScreen from './src/screens/NavigatorScreen';
+
+import ChangeDesktopScreen from './src/screens/settings/ChangeDesktopScreen';
+import ChangeAvatarScreen from './src/screens/settings/ChangeAvatarScreen';
+import VideoScreen from './src/screens/settings/VideoScreen';
+
+import AddImageScreen from './src/screens/gallery/AddImageScreen';
+import EditDescriptionScreen from './src/screens/gallery/EditDescriptionScreen';
+import ImagePreviewScreen from './src/screens/gallery/ImagePreviewScreen';
 
 const Stack = createStackNavigator();
 
-const rootReducer = combineReducers({
-    auth: authReducer,
-});
-const store = createStore(rootReducer, applyMiddleware(thunk));
 
-export default function App() {
-    return (
-        <Provider store={ store }>
+export default class App extends React.Component {
+    
+    render() {
+        return (
             <NavigationContainer ref={navigationRef}>
                 <Stack.Navigator>
                     <Stack.Screen name="Loading" component={LoadingScreen} options={{ headerShown: false }} />
                     <Stack.Screen name="Auth" component={AuthScreen} options={{ headerShown: false }} />
-                    <Stack.Screen name="SearchPartner" component={SearchPartnerScreen} options={{ headerShown: false }} />                    
+                    <Stack.Screen name="SearchPartner" component={SearchPartnerScreen} options={{ headerShown: false }} />
+                    <Stack.Screen name="WaitingForPartner" component={WaitingForPartnerScreen} options={{ headerShown: false }} />                    
+                    <Stack.Screen name="NavigatorScreen" component={NavigatorScreen} options={{ headerShown: false }} />
+                    <Stack.Screen name="ChangeDesktop" component={ChangeDesktopScreen} />
+                    <Stack.Screen name="ChangeAvatar" component={ChangeAvatarScreen} />
+                    <Stack.Screen name="AddImageScreen" component={AddImageScreen} />
+                    <Stack.Screen name="EditDescriptionScreen" component={EditDescriptionScreen} />
+                    <Stack.Screen name="ImagePreview" component={ImagePreviewScreen} options={{ headerShown: false }} />
+                    <Stack.Screen name="VideoScreen" component={VideoScreen} options={{ headerShown: false }} />                        
                 </Stack.Navigator>
             </NavigationContainer>
-        </Provider>
-    );
+        );
+    }
+
 }
