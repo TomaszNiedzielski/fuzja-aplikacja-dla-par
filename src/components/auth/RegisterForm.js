@@ -35,7 +35,6 @@ const RegisterForm = props => {
         .then((response) => response.json())
         .then(async(responseJson) => {
             setLoadingButton(false);
-            console.log(responseJson);
             if(!responseJson.user) {
                 let error;
                 if(responseJson.email) {
@@ -83,12 +82,13 @@ const RegisterForm = props => {
                 placeholder="e-mail"
                 onChangeTextHandler={setEmail}
                 autoCompleteType="email"
-                keyboardType="email-address"                
+                keyboardType="email-address"   
+                autoCapitalize="none"
             />
             <Input
                 placeholder="hasło"
                 onChangeTextHandler={setPassword}
-                secureTextEntry={true}                
+                secureTextEntry={true}   
             />
             <SignButton
                 title="zarejestruj się"

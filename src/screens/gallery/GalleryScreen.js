@@ -23,12 +23,13 @@ export default class GalleryScreen extends React.Component {
         this.state = {
             userToken: null,
             images: [],
-            layout: 'oneColumn'
+            layout: 'oneColumn',
+            refreshControl: false
         }
     }
 
     render() {
-        const { images, userToken, layout } = this.state;
+        const { images, userToken, layout, refreshControl } = this.state;
         return (
             <View style={styles.container}>
                 {(images.length === 0
@@ -40,6 +41,7 @@ export default class GalleryScreen extends React.Component {
                     userToken={userToken}
                     editDescription={this.editDescription}
                     layout={layout}
+                    refreshControl={refreshControl}
                 />)}
 
                 <AddImageButton
@@ -119,6 +121,7 @@ export default class GalleryScreen extends React.Component {
     }
 
     loadImages() {
+        this.setState({ refreshControl: true });
         //loading images
         const { userToken } = this.state;
         fetch(apiUrl + 'load-gallery', {
@@ -138,6 +141,7 @@ export default class GalleryScreen extends React.Component {
                 //save in asyncstorage
                 await AsyncStorage.setItem('galleryImages', JSON.stringify(responseJson.gallery_images));
             }
+            this.setState({ refreshControl: false });            
         })
         .catch((error) => {
             throw (error);
@@ -154,7 +158,6 @@ export default class GalleryScreen extends React.Component {
         const itemIndex = this.state.images.findIndex(item => item.id === imageId);
         let images = this.state.images;
         images[itemIndex].description = description;
- 
         fetch(apiUrl + 'update-description', {
             method: 'POST',
             headers: {

@@ -56,7 +56,8 @@ export default class ChatScreen extends React.Component {
         notification: {},
         partnerActivity: null,
         PartnerIsTyping: false,
-        lastMessageTyping: null
+        lastMessageTyping: null,
+        scrollIsCloseToTop: false
     }
 
     render() {
@@ -80,6 +81,7 @@ export default class ChatScreen extends React.Component {
                     listViewProps={{
                         scrollEventThrottle: 400,
                         onScroll: ({ nativeEvent }) => { if (this.isCloseToTop(nativeEvent)) {
+                            this.setState({ scrollIsCloseToTop: true });
                             this.loadMessages();
                         }},
                         backgroundColor: '#fff',
@@ -164,7 +166,7 @@ export default class ChatScreen extends React.Component {
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         this.restoreUserData();
         this.getPermissionAsync();
 
@@ -179,8 +181,9 @@ export default class ChatScreen extends React.Component {
 
         //listen for app state
         this.checkAppState();
-    }
 
+    }
+    
     checkAppState() {
         this.handleAppStateChange = (state) => {
             if(state === 'active') {
@@ -229,8 +232,12 @@ export default class ChatScreen extends React.Component {
             if(isConnected && this.props.navigation.isFocused() && AppState.currentState === 'active') {
                 if(this.state.messages.length === 0) {
                     this.loadMessages();
+                } else {
+                    this.loadUnreadMessages();
                 }
-                this.loadUnreadMessages();
+                if(this.state.scrollIsCloseToTop === true) {
+                    this.loadMessages();
+                }
             }
         }
         NetInfo.isConnected.addEventListener('connectionChange', handleFirstConnectivityChange);
@@ -263,8 +270,15 @@ export default class ChatScreen extends React.Component {
         })
         .then((response) => response.json())
         .then((responseJson) => {
+            const concatenatedMessages = GiftedChat.prepend(this.state.messages, responseJson);
+            // remove duplicates if exists
+            const uniqueMessages = Array.from(new Set(concatenatedMessages.map(a => a._id)))
+                .map(_id => {
+                    return concatenatedMessages.find(a => a._id === _id)
+                });
+
             this.setState({
-                messages: GiftedChat.prepend(this.state.messages, responseJson),
+                messages: uniqueMessages,
                 messagesPagination: this.state.messagesPagination + 1,
                 loadingMessages: false,
                 noMoreMessages: responseJson.length === 0 ? true : false
@@ -277,9 +291,11 @@ export default class ChatScreen extends React.Component {
                 this.setState({ isLoading: false });
             }
 
+            this.setState({ scrollIsCloseToTop: true });
+
         })
         .catch((error) => {
-            this.setState({ loadingMessages: false });            
+            this.setState({ loadingMessages: false });       
         });
     }
 
@@ -299,9 +315,16 @@ export default class ChatScreen extends React.Component {
         .then((response) => response.json())
         .then((responseJson) => {
             if(responseJson.length === 0) return;
-            this.setState(previousState => ({
-                messages: GiftedChat.append(previousState.messages, responseJson)
-            }));
+
+            const concatenatedMessages = GiftedChat.append(this.state.messages, responseJson);
+
+            // remove duplicates if exists
+            const uniqueMessages = Array.from(new Set(concatenatedMessages.map(a => a._id)))
+                .map(_id => {
+                    return concatenatedMessages.find(a => a._id === _id)
+                });
+
+            this.setState({ messages: uniqueMessages });
         })
         .catch((error) => {
             throw(error);
@@ -412,10 +435,15 @@ export default class ChatScreen extends React.Component {
             const { messages } = this.state;
             if(messages.length === 0) return;
             let updatedObject = messages.shift(); // return first element and remove it
+            
+            delete updatedObject.sent;
+
             updatedObject.read = 1;
             messages.unshift(updatedObject);
-            this.setState({ messages: [] });
-            this.setState({ messages: GiftedChat.append(this.state.messages, messages) })  // tutaj są błedy i sie rozpierdala
+
+            //this.setState({ messages: [] });
+
+            this.setState({ messages: messages })  // tutaj są błedy i sie rozpierdala
         }.bind(this));
     }
 
@@ -776,9 +804,9 @@ export default class ChatScreen extends React.Component {
         });
     }
 
-    _handleNotification = notification => {
+    _handleNotification = async notification => {
         if(this.props.navigation.isFocused() && AppState.currentState === 'active') {
-            Notifications.dismissNotificationAsync(notification.notificationId)
+            Notifications.dismissNotificationAsync(notification.notificationId);
         } else {
             if(AppState.currentState !== 'active') {
                 Vibration.vibrate();
@@ -786,8 +814,6 @@ export default class ChatScreen extends React.Component {
             this.setState({ notification: notification });
         }
     };
-
-
 
 }
 

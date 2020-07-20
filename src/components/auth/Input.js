@@ -6,7 +6,7 @@ const Input = props => {
         <TextInput
             style={ styles.input }        
             onChangeText={ text => {props.onChangeTextHandler(text)} }
-            autoCapitalize="none"
+            //autoCapitalize="none"
             placeholderTextColor="white"
             {...props}
         />

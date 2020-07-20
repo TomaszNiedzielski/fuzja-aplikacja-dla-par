@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableNativeFeedback, Text, StyleSheet } from 'react-native';
+import { TouchableNativeFeedback, Text, StyleSheet, View } from 'react-native';
 import colors from '../../../constans/colors';
 import { Entypo } from '@expo/vector-icons';
 const SaveButton = props => {
@@ -7,7 +7,9 @@ const SaveButton = props => {
         <TouchableNativeFeedback
             onPress={props.saveHandler}
         >
-            <Entypo name="check" size={24} color="black" style={{ marginRight: 10 }} />
+            <View style={{padding: 7}}>
+                <Entypo name="check" size={24} color={props.color ? props.color : 'black'} style={{ marginRight: 10 }} />
+            </View>
         </TouchableNativeFeedback>
     );
 }

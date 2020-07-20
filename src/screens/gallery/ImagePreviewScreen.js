@@ -17,7 +17,7 @@ export default class SelectedImageModal extends React.Component {
 
     state = {
         image: {},
-        showBottomBar: true
+        showBottomBar: false
     }
 
     render() {

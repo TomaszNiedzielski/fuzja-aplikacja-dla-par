@@ -16,6 +16,7 @@ export default class EditDescriptionScreen extends React.Component {
                     placeholder="napisz opis..."
                     multiline={true}
                     value={this.state.description}
+                    maxLength={700}
                     autoFocus={true}
                     onChangeText={text => {
                         this.setState({ description: text });

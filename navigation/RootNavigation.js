@@ -10,3 +10,7 @@ export function navigate(name, params) {
 export function replace(name, params) {
   navigationRef.current.dispatch(StackActions.replace(name, params))
 }
+
+export function popToTop(name, params) {
+  navigationRef.current.dispatch(StackActions.popToTop(name, params))
+}

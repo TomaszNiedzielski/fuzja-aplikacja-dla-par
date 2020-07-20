@@ -32,7 +32,8 @@ export default class ImagesList extends React.Component {
                             <RefreshControl
                                 refreshing={refreshing}
                                 onRefresh={() => {
-                                    this.props.loadImages()
+                                    this.setState({ refreshing: true });
+                                    this.props.loadImages();
                                 }}
                             />
                         }
@@ -70,7 +71,8 @@ export default class ImagesList extends React.Component {
                             <RefreshControl
                                 refreshing={refreshing}
                                 onRefresh={() => {
-                                    this.props.loadImages()
+                                    this.setState({ refreshing: true });                                    
+                                    this.props.loadImages();
                                 }}
                             />
                         }
@@ -110,6 +112,13 @@ export default class ImagesList extends React.Component {
                 images: this.props.images
             });
         }
+
+        if(this.props.refreshControl !== this.state.refreshing) {
+            this.setState({
+                refreshing: this.props.refreshControl
+            });
+        }
+
     }
 
 }
@@ -120,8 +129,6 @@ const styles = StyleSheet.create({
         margin: 1
     },
     image: {
-        //width: (Dimensions.get('window').width-6)/3,
-        //height: (Dimensions.get('window').width-6)/3,
         width: (Dimensions.get('window').width-4)/2,
         height: (Dimensions.get('window').width-4)/2,
     },

@@ -60,8 +60,9 @@ export default class SearchPartnerScreen extends React.Component {
                                     placeholder="e-mail twojego partnera..."
                                     placeholderTextColor="white"
                                     style={styles.input}
-                                    autoCapitalize="none"                                
+                                    autoCapitalize="none"
                                     onChangeText={text => this.setState({ email: text })}
+                                    keyboardType="email-address"                                    
                                 />
 
                                 {email !== null && email.length > 0 && 
