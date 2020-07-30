@@ -6,6 +6,8 @@ import HomeScreen from './HomeScreen';
 import GalleryNavigator from './gallery/GalleryNavigator';
 import ChatScreen from './ChatScreen';
 import SettingsNavigator from './settings/SettingsNavigator';
+import GameNavigator from './game/GameNavigator';
+
 import colors from '../../constans/colors';
 
 
@@ -50,6 +52,16 @@ const NavigatorScreen = () => {
                         <MaterialCommunityIcons name="image" color={color} size={size} />
                     ),
                     title: 'Galeria'
+                }}
+            />
+            <Tab.Screen
+                name="GameNavigator"
+                component={GameNavigator}
+                options={{
+                    tabBarIcon: () => (
+                        <MaterialCommunityIcons name="heart" color={color} size={size} />
+                    ),
+                    title: 'Gra'
                 }}
             />
             <Tab.Screen

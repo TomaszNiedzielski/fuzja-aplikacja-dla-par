@@ -1,49 +1,29 @@
-/*import React, { Component } from "react";
-import { View, StyleSheet, Text, Button, Animated } from "react-native";
+import React, { Component } from "react";
+import { StyleSheet, View, Animated, Image, Easing } from 'react-native';
+
+import RotateView from 'react-native-rotate-view';
 
 import { Ionicons } from '@expo/vector-icons';
+import { TouchableNativeFeedback } from "react-native-gesture-handler";
 
+import SelectPicker from '../../components/game/SelectPicker';
 
 export default class App extends Component {
+
     
-    constructor() {
-        super();
-
-        this.rotate = this.rotate.bind(this);
-    }
-
-    state = {
-       rotate: 50
-    }
-
     render() {
-        const { rotate } = this.state;
-        console.log("render: ", rotate);
+
         return (
             <View style={styles.container}>
-                <Animated.View style={[styles.spinner, {transform: [{ rotate: this.state.rotate+'deg'}]}]} />
-                <Button
-                    title="rotate"
-                    onPress={() => this.rotate()}    
+
+                <SelectPicker
+                    options={['soft', 'hot', 'spicey']}
                 />
+
             </View>
         );
     }
 
-    componentDidMount() {
-        
-    }
-
-    componentWillUnmount() {
-        clearInterval(this.intervalID);
-    }
-
-    rotate() {
-        console.log(this.state.rotate);
-        this.setState({ rotate: this.state.rotate+10 });
-    }
-
-    
     
 }
 
@@ -52,15 +32,20 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-    },
-    spinner: {
-        height: 100,
-        width: 100,
         backgroundColor: 'red'
-    }
+    },
+    spinnerWrapper: {
+        height: 300,
+        width: 300,
+        backgroundColor: 'green',
+        borderRadius: 300,
+        //transform: [{ rotate: '45deg' }]
+    },
+    
 });
-*/
 
+
+/*
 import React from 'react';
 import { StyleSheet, View, Animated, Image, Easing } from 'react-native';
 
@@ -114,3 +99,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#C2C2C2',
     },
 });
+
+*/
+

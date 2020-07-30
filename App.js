@@ -1,4 +1,5 @@
 import React from 'react';
+import { View } from 'react-native';
 import { StatusBar, AppState, AsyncStorage } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -25,9 +26,9 @@ import AddImageScreen from './src/screens/gallery/AddImageScreen';
 import EditDescriptionScreen from './src/screens/gallery/EditDescriptionScreen';
 import ImagePreviewScreen from './src/screens/gallery/ImagePreviewScreen';
 
+import * as Font from 'expo-font';
 
 const Stack = createStackNavigator();
-
 
 export default class App extends React.Component {
     
@@ -37,35 +38,47 @@ export default class App extends React.Component {
     }
 
     state = {
-        accessCode: false
+        accessCode: false,
+        fontLoaded: false
     }
 
     render() {
-        return (
-            <NavigationContainer ref={navigationRef}>
-                <Stack.Navigator>
-                    <Stack.Screen name="Loading" component={LoadingScreen} options={{ headerShown: false }} />
-                    <Stack.Screen name="Auth" component={AuthScreen} options={{ headerShown: false }} />
-                    <Stack.Screen name="SearchPartner" component={SearchPartnerScreen} options={{ headerShown: false }} />
-                    <Stack.Screen name="WaitingForPartner" component={WaitingForPartnerScreen} options={{ headerShown: false }} />                    
-                    <Stack.Screen name="NavigatorScreen" component={NavigatorScreen} options={{ headerShown: false }} />
-                    <Stack.Screen name="ChangeDesktop" component={ChangeDesktopScreen} />
-                    <Stack.Screen name="ChangeAvatar" component={ChangeAvatarScreen} />
-                    <Stack.Screen name="AddImageScreen" component={AddImageScreen} />
-                    <Stack.Screen name="EditDescriptionScreen" component={EditDescriptionScreen} />
-                    <Stack.Screen name="ImagePreview" component={ImagePreviewScreen} options={{ headerShown: false }} />
-                    <Stack.Screen name="VideoScreen" component={VideoScreen} options={{ headerShown: false }} />
-                    <Stack.Screen name="ChangeAccessCodeScreen" component={ChangeAccessCodeScreen} />
-                    <Stack.Screen name="AccessCodeScreen" component={AccessCodeScreen} />
-                    <Stack.Screen name="SaveImportantDatesScreen" component={SaveImportantDatesScreen} />
-                    <Stack.Screen name="PaymentScreen" component={PaymentScreen} options={{ headerShown: false }} />                    
-                </Stack.Navigator>
-            </NavigationContainer>
-        );
+        if(this.state.fontLoaded === true) {
+            return (
+                <NavigationContainer ref={navigationRef}>
+                    <Stack.Navigator>
+                        <Stack.Screen name="Loading" component={LoadingScreen} options={{ headerShown: false }} />
+                        <Stack.Screen name="Auth" component={AuthScreen} options={{ headerShown: false }} />
+                        <Stack.Screen name="SearchPartner" component={SearchPartnerScreen} options={{ headerShown: false }} />
+                        <Stack.Screen name="WaitingForPartner" component={WaitingForPartnerScreen} options={{ headerShown: false }} />                    
+                        <Stack.Screen name="NavigatorScreen" component={NavigatorScreen} options={{ headerShown: false }} />
+                        <Stack.Screen name="ChangeDesktop" component={ChangeDesktopScreen} />
+                        <Stack.Screen name="ChangeAvatar" component={ChangeAvatarScreen} />
+                        <Stack.Screen name="AddImageScreen" component={AddImageScreen} />
+                        <Stack.Screen name="EditDescriptionScreen" component={EditDescriptionScreen} />
+                        <Stack.Screen name="ImagePreview" component={ImagePreviewScreen} options={{ headerShown: false }} />
+                        <Stack.Screen name="VideoScreen" component={VideoScreen} options={{ headerShown: false }} />
+                        <Stack.Screen name="ChangeAccessCodeScreen" component={ChangeAccessCodeScreen} />
+                        <Stack.Screen name="AccessCodeScreen" component={AccessCodeScreen} />
+                        <Stack.Screen name="SaveImportantDatesScreen" component={SaveImportantDatesScreen} />
+                        <Stack.Screen name="PaymentScreen" component={PaymentScreen} options={{ headerShown: false }} />                    
+                    </Stack.Navigator>
+                </NavigationContainer>
+            );
+        } else {
+            return (
+                <View></View>
+            );
+        }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         this.checkAppState();
+
+        await Font.loadAsync({
+            'KaushanScript-Regular': require('./assets/fonts/KaushanScript-Regular.ttf'),                         
+        });
+        this.setState({ fontLoaded: true });
     }
 
     checkAppState() {

@@ -30,7 +30,7 @@ export default class SettingsScreen extends React.Component {
                     <View style={styles.itemContainer}>
                         <Text style={styles.itemTitle}>Aplikacja</Text>
                         <Text style={styles.itemText}>nazwa: fuzja</Text>
-                        <Text style={styles.itemText}>wersja: 1.0.2</Text>
+                        <Text style={styles.itemText}>wersja: 1.0.3</Text>
                     </View>
                     <View style={styles.itemContainer}>
                         <Text style={styles.itemTitle}>Użytkownik</Text>
@@ -82,20 +82,6 @@ export default class SettingsScreen extends React.Component {
                             style={{fontSize: 13, color: 'black', fontWeight: 'normal'}}
                         />
                     </View>
-
-
-                    <View style={styles.itemContainer}>
-                        <Text style={styles.itemTitle}>test</Text>
-                        <TouchableOpacity
-                            onPress={() => {
-                                this.props.navigation.navigate('VideoScreen');
-                            }}
-                        >
-                            <Text style={styles.itemText}>test</Text>
-                        </TouchableOpacity>
-                    </View>
-
-
                 </ScrollView>
             </View>
         );
