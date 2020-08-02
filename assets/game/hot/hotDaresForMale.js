@@ -100,7 +100,7 @@ export const hotDaresForMale = [
     },
     {
         id: 19,
-        text: 'Wymasuj twojej dziewczynie stopy.',
+        text: 'Wymasuj stopy twojej dziewczynie.',
         timer: true,
         minutes: 1,
         seconds: 0

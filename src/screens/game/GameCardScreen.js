@@ -28,16 +28,16 @@ export default class GameCardScreen extends React.Component {
 
     render() {
         const { selectedPerson } = this.props.route.params;
-        const { text, seconds, minutes, timer } = this.state;     
+        const { text, seconds, minutes, timer } = this.state;
         return(
              <LinearGradient
                 colors={['rgba(247,106,63,1) 100%', 'rgba(252,95,52,1) 90%', 'rgba(248,40,45,1) 5%', '90deg, rgba(242,33,53,1) 0%']}
                 style={ this.styles.container }
-            >   
+            >
                 {timer &&
                     <View style={{marginBottom: 20}}>
                         <Timer
-                            minutes={minutes}
+                            minutes={minutes ? minutes : 0}
                             seconds={seconds}
                             style={{color: 'white', fontSize: 30,}}
                         />
