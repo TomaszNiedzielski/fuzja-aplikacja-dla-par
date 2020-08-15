@@ -5,9 +5,9 @@ import colors from '../../../constans/colors';
 const RadioButton = props => {
     return (
         <View style={[{
-            height: 24,
-            width: 24,
-            borderRadius: 12,
+            height: 20,
+            width: 20,
+            borderRadius: 10,
             borderWidth: 2,
             borderColor: 'white',
             alignItems: 'center',
@@ -16,9 +16,9 @@ const RadioButton = props => {
             {
                 props.selected &&
                 <View style={{
-                    height: 12,
-                    width: 12,
-                    borderRadius: 6,
+                    height: 8,
+                    width: 8,
+                    borderRadius: 4,
                     backgroundColor: 'white',
                 }}/>
             }

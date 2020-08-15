@@ -30,7 +30,7 @@ export default class ChatHeader extends React.Component {
         const { partnerName, partnerAvatar, userAvatar, loadingPartnerAvatar, loadingUserAvatar } = this.state;
         return (
             <LinearGradient
-                colors={['rgba(247,106,63,1) 100%', 'rgba(252,95,52,1) 90%', 'rgba(248,40,45,1) 5%', '90deg, rgba(242,33,53,1) 0%']}
+                colors={colors.gradient}
                 style={styles.container}
                 start={{ x: 1, y: 1 }}
                 end={{ x: 0, y: 1 }}
@@ -48,13 +48,28 @@ export default class ChatHeader extends React.Component {
                                 onLoadEnd={() => this.setState({ loadingPartnerAvatar: false })}
                             /> :
                             <FontAwesome5 name="user-alt" size={20} color="white" />}
+
+                            {this.props.active === true &&
+                                <View style={{
+                                    height: 14,
+                                    width: 14,
+                                    backgroundColor: 'green',
+                                    position: 'absolute',
+                                    borderWidth: 1,
+                                    borderColor: 'white',
+                                    borderRadius: 7,
+                                    right: -5,
+                                    bottom: -3
+                                }}></View>
+                            }
+
                             {loadingPartnerAvatar &&
                                 <ActivityIndicator color='white' size={17} />
                             }
                         </View>
                         <View style={styles.title}>
                             <Text style={styles.name}>{partnerName} </Text>
-                            <Text style={styles.activity}>{this.props.active === true ? 'online' : 'offline'}</Text>                    
+                            <Text style={styles.activity}>{this.props.active === true ? 'aktywny(a) teraz' : 'offline'}</Text>                    
                         </View>
                     </View>
                     <TouchableNativeFeedback
@@ -113,7 +128,10 @@ export default class ChatHeader extends React.Component {
         });
     }
 
-    loadCouplesAvatars() {
+    async loadCouplesAvatars() {
+        const userAvatar = await AsyncStorage.getItem('userAvatar');
+        const partnerAvatar = await AsyncStorage.getItem('partnerAvatar');
+        this.setState({ userAvatar: userAvatar, partnerAvatar: partnerAvatar });
         fetch(apiUrl + 'get-couples-avatar-names', {
             method: 'POST',
             headers: {
@@ -125,12 +143,14 @@ export default class ChatHeader extends React.Component {
             })
         })
         .then((response) => response.json())
-        .then((responseJson) => {
+        .then(async(responseJson) => {
             if(responseJson.userAvatar) {
-                this.setState({ userAvatar: responseJson.userAvatar.avatarName })
+                this.setState({ userAvatar: responseJson.userAvatar.avatarName });
+                await AsyncStorage.setItem('userAvatar', responseJson.userAvatar.avatarName);
             }
             if(responseJson.partnerAvatar) {
                 this.setState({ partnerAvatar: responseJson.partnerAvatar.avatarName });
+                await AsyncStorage.setItem('partnerAvatar', responseJson.partnerAvatar.avatarName);                
             }
         })
         .catch((error) => {
@@ -172,7 +192,8 @@ const styles = StyleSheet.create({
     activity: {
         color: 'white',
         letterSpacing: 0.5,
-        fontSize: 12
+        fontSize: 12,
+        fontWeight: 'bold'
     },
     avatar: {
         flex: 1,

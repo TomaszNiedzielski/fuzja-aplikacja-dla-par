@@ -1,14 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, KeyboardAvoidingView, AsyncStorage, YellowBox, Vibration, Platform, AppState, Keyboard, Dimensions, Alert } from 'react-native';
+import { View,
+    Text,
+    StyleSheet,
+    KeyboardAvoidingView,
+    AsyncStorage,
+    YellowBox,
+    Vibration,
+    Platform,
+    Clipboard,
+    AppState,
+    Keyboard,
+    Dimensions,
+    Alert,
+    Image,
+    BackHandler,
+    TouchableWithoutFeedback
+} from 'react-native';
 import { GiftedChat, Send, Bubble, InputToolbar, Composer, MessageImage, Avatar, Time } from 'react-native-gifted-chat';
-import { apiUrl } from '../../constans/apiUrl';
+import { apiUrl, apiImage } from '../../constans/apiUrl';
 import Pusher from 'pusher-js/react-native';
+
 import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import NetInfo from "@react-native-community/netinfo";
 import InternetConnection from '../components/alerts/InternetConnection';
 
 import ChatHeader from '../components/chat/ChatHeader';
+import StickersManager from '../components/chat/StickersManager';
 
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
@@ -22,6 +42,8 @@ import colors from '../../constans/colors';
 import { LinearGradient } from 'expo-linear-gradient';
 import 'dayjs/locale/pl';
 
+import { default as ImageScalable } from 'react-native-scalable-image';
+
 export default class ChatScreen extends React.Component {
 
     constructor() {
@@ -33,6 +55,7 @@ export default class ChatScreen extends React.Component {
         this.renderBubble = this.renderBubble.bind(this);
         this.isFocused = this.isFocused.bind(this);
         this.renderComposer = this.renderComposer.bind(this);
+        this.renderInputToolbar = this.renderInputToolbar.bind(this);
         this.pickImage = this.pickImage.bind(this);
 
         this.subscribePushNotifications = this.subscribePushNotifications.bind(this);
@@ -40,6 +63,11 @@ export default class ChatScreen extends React.Component {
         this.renderFooter = this.renderFooter.bind(this);
         this.onInputTextChanged = this.onInputTextChanged.bind(this);
         this.checkAppState = this.checkAppState.bind(this);
+        this.restorePartnerAvatar = this.restorePartnerAvatar.bind(this);
+        this.sendSticker = this.sendSticker.bind(this);
+        this.backAction = this.backAction.bind(this);
+        this.deleteMessage = this.deleteMessage.bind(this);
+        this.onLongPress = this.onLongPress.bind(this);
     }
 
     state = {
@@ -57,53 +85,88 @@ export default class ChatScreen extends React.Component {
         partnerActivity: null,
         PartnerIsTyping: false,
         lastMessageTyping: null,
-        scrollIsCloseToTop: false
+        scrollIsCloseToTop: false,
+        partnerAvatar: null,
+        stickersContainerVisible: false
     }
 
     render() {
-        const { noMoreMessages, isConnected, messages, loadingMessages, isLoading, partnerActivity } = this.state;
+        const { noMoreMessages, isConnected, messages, loadingMessages, isLoading, partnerActivity, stickersContainerVisible } = this.state;
         return (
             <View style={{ flex: 1, backgroundColor: 'white'}}>
-            <KeyboardAvoidingView
-                style={{ flex: 1, justifyContent: 'center' }}
-                behavior={ Platform.OS === "ios" ? 'padding' : 'height' }
-            >
-                <ChatHeader
-                    active={partnerActivity}
-                    navigation={this.props.navigation}
-                />
-                <GiftedChat
-                    messages={messages}
-                    onSend={messages => this.onSend(messages)}
-                    user={{
-                        _id: this.state.userData.userId,
-                    }}
-                    listViewProps={{
-                        scrollEventThrottle: 400,
-                        onScroll: ({ nativeEvent }) => { if (this.isCloseToTop(nativeEvent)) {
-                            this.setState({ scrollIsCloseToTop: true });
-                            this.loadMessages();
-                        }},
-                        backgroundColor: '#fff',
-                        marginBottom: 20
-                    }}
-                    renderSend={this.renderSend}
-                    isLoadingEarlier={isLoading}
-                    loadEarlier={isLoading}
-                    renderBubble={this.renderBubble}
-                    renderInputToolbar={this.renderInputToolbar}
-                    renderComposer={this.renderComposer}
-                    renderMessageImage={this.renderMessageImage}
-                    renderTime={this.renderTime}
-                    onLongPress={this.onLongPress}
-                    renderFooter={this.renderFooter}
-                    onInputTextChanged={this.onInputTextChanged}
-                    locale={moment.locale('pl')}
-                />
-                {isConnected === false && <InternetConnection/>}
-            </KeyboardAvoidingView>
+                <KeyboardAvoidingView
+                    style={{ flex: 1, justifyContent: 'center' }}
+                    behavior={ Platform.OS === "ios" ? 'padding' : 'height' }
+                >
+                    <ChatHeader
+                        active={partnerActivity}
+                        navigation={this.props.navigation}
+                    />
+                    <GiftedChat
+                        messages={messages}
+                        onSend={messages => this.onSend(messages)}
+                        user={{
+                            _id: this.state.userData.userId,
+                        }}
+                        listViewProps={{
+                            scrollEventThrottle: 400,
+                            onScroll: ({ nativeEvent }) => { if (this.isCloseToTop(nativeEvent)) {
+                                this.setState({ scrollIsCloseToTop: true });
+                                this.loadMessages();
+                            }},
+                            backgroundColor: '#fff',
+                            marginBottom: 20
+                        }}
+                        renderSend={this.renderSend}
+                        isLoadingEarlier={isLoading}
+                        loadEarlier={isLoading}
+                        renderBubble={this.renderBubble}
+                        renderInputToolbar={this.renderInputToolbar}
+                        renderComposer={this.renderComposer}
+                        renderMessageImage={this.renderMessageImage}
+                        renderTime={this.renderTime}
+                        //onLongPress={this.onLongPress}
+                        renderFooter={this.renderFooter}
+                        onInputTextChanged={this.onInputTextChanged}
+                        locale={moment.locale('pl')}
+                    />
+                    {isConnected === false && <InternetConnection/>}
+                    {stickersContainerVisible === true && <StickersManager sendSticker={this.sendSticker} />}
+                </KeyboardAvoidingView>
             </View>
         );
+    }
+
+    onLongPress(context, currentMessage) {
+        if (currentMessage.text) {
+            const options = [
+                'Skopiuj',
+                'Usuń wiadomość',
+                'Anuluj',
+            ];
+            const cancelButtonIndex = options.length - 1;
+            context.actionSheet().showActionSheetWithOptions({
+                options,
+                cancelButtonIndex,
+            },
+                (buttonIndex) => {
+                    switch (buttonIndex) {
+                        case 0:
+                            Clipboard.setString(currentMessage.text);
+                            break;
+                        case 1:
+                            this.deleteMessage(currentMessage._id);
+                            break;
+                    }
+                });
+        }
+        
+    }
+
+    deleteMessage(messageIdToDelete) {
+        this.setState({
+            messages: this.state.messages.filter(message => message._id !== messageIdToDelete)
+        });
     }
 
     renderFooter() {
@@ -117,15 +180,24 @@ export default class ChatScreen extends React.Component {
             }
         }
 
+        const { partnerAvatar } = this.state;
+
         return (
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <View>
-                    {this.state.PartnerIsTyping && 
-                    <Text style={{ marginLeft: 12, color: '#a1a1a1'}}>{this.state.partnerData.partnerName} pisze...</Text>}
-                </View>
+            <View style={{ flexDirection: 'column', justifyContent: 'space-between' }}>
                 <View style={{ alignItems: 'flex-end' }}>
                     {seen &&
                     <Text style={styles.seen}>wyświetlono</Text>}
+                </View>
+                <View>
+                    {this.state.PartnerIsTyping &&
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        { partnerAvatar !== null
+                            ? <View style={styles.avatarWrapper}><Image source={{ uri: partnerAvatar }} style={{ height: 36, width: 36, borderRadius: 18 }} /></View> 
+                            : <View style={styles.avatarWrapper}><FontAwesome5 name="user-alt" size={22} color="white" /></View>
+                        }
+                        <Text style={{ marginLeft: 12, color: '#a1a1a1'}}>{this.state.partnerData.partnerName} pisze...</Text>
+                    </View>
+                    }
                 </View>
             </View>
         );
@@ -182,6 +254,23 @@ export default class ChatScreen extends React.Component {
         //listen for app state
         this.checkAppState();
 
+        this.restorePartnerAvatar();
+
+        // back button handler
+        this.backHandler = BackHandler.addEventListener(
+            "hardwareBackPress",
+            this.backAction
+        );
+
+        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {this.setState({ stickersContainerVisible: false })});
+
+    }
+
+    backAction = () => {
+        if(this.state.stickersContainerVisible === true) {
+            this.setState({ stickersContainerVisible: false });
+            return true;
+        }
     }
     
     checkAppState() {
@@ -200,6 +289,10 @@ export default class ChatScreen extends React.Component {
         this.pusher.unsubscribe(this.channel);
         this.pusher.disconnect();
         AppState.removeEventListener('change', this.handleAppStateChange);
+
+        this.backHandler.remove();
+
+        this.keyboardDidShowListener.remove();
     }
 
     restoreUserData = async () => {
@@ -223,7 +316,13 @@ export default class ChatScreen extends React.Component {
         const { navigation } = this.props;
         navigation.addListener('focus', () => {
             this.loadUnreadMessages();
+            this.restorePartnerAvatar();
         });
+    }
+
+    async restorePartnerAvatar() {
+        const partnerAvatar = await AsyncStorage.getItem('partnerAvatar');
+        this.setState({ partnerAvatar: partnerAvatar });
     }
 
     checkInternetConnection = () => {
@@ -366,6 +465,63 @@ export default class ChatScreen extends React.Component {
             });
             this.setState({ messages: removeErrorMessage }); 
         });
+    }
+
+    sendSticker = (stickerNumber, stickersCategory) => {
+        // show sticker on screen like message
+        const { userData } = this.state;
+
+        const randomId = new Date().getMilliseconds();
+        const stickerMessage = {
+            _id: randomId,
+            createdAt: moment().format("YYYY-MM-DD hh:mm:ss"),
+            from: userData.userId,
+            image: apiImage+'stickers/'+stickersCategory+'/'+stickerNumber+'.png',
+            read: 0,
+            text: null,
+            sent: false,
+            sticker: true,
+            user: {
+                _id: userData.userId,
+                name: userData.userName,
+            },
+        }
+
+        this.setState({ messages: GiftedChat.append(this.state.messages, stickerMessage) });
+
+        fetch(apiUrl+'send-sticker', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                api_token: userData.userToken,
+                sticker: stickerMessage.image
+            }),
+        })
+        .then((response) => response.json())
+        .then((responseJson) => {
+            let messages = this.state.messages;
+            const updateToSentMessages = messages.map(function(item) {
+                if(item._id === stickerMessage._id) {
+                    delete item.sent;
+                }
+                return item;                
+            });
+            this.setState({ messages: updateToSentMessages });
+        })
+        .catch((error) => {
+            // remove message from array
+            let messages = this.state.messages;
+            const removeErrorMessage = messages.filter(function(item) {
+                if(item._id !== stickerMessage._id) {
+                    return item;
+                }
+            });
+            this.setState({ messages: removeErrorMessage }); 
+        });
+
     }
 
     onSend = (newMessage = []) => {
@@ -518,8 +674,27 @@ export default class ChatScreen extends React.Component {
             Date = () => <View style={{ flex: 1, justifyContent: 'flex-end' }}></View>
             
         }*/
-        
 
+        if(currentMessage.image) {
+            const splitedImage = currentMessage.image.split("/");
+            if(splitedImage[4] === 'stickers') {
+                currentMessage.sticker = true;
+            }
+        }
+
+        if(currentMessage.sticker) {
+            return (
+                <View style={{flexDirection: 'row'}}>
+                    <ImageScalable
+                        source={{uri: currentMessage.image}}
+                        width={100}
+                        resizeMode="contain"
+                    />
+                    { currentMessage.sent !== undefined && <Ionicons name="md-send" size={17} color={colors.primary} style={{ paddingLeft: 5 }} /> }                    
+                </View>
+            );
+        }
+        
         return (
             <View style={{ flex: 1, flexDirection: 'row' }}>
                 {/*currentMessage.user._id === this.state.userData.userId && <Date />*/}
@@ -584,18 +759,35 @@ export default class ChatScreen extends React.Component {
 
     renderInputToolbar (props) {
         return (
-            <View style={{ width: '100%', position: 'absolute', bottom: 7, marginTop: 4}}>
-                <InputToolbar 
-                    {...props}
-                    containerStyle={{
-                        marginHorizontal: 12,
-                        borderTopWidth: 0,
-                        backgroundColor: '#f2f2f2',
-                        borderRadius: 30,
-                        paddingHorizontal: 15,
-                        paddingVertical: 3,
-                    }}
-                />
+            <View style={{ width: '100%', position: 'absolute', bottom: 3, marginTop: 4, minHeight: 50 }}>
+                <View style={{flexDirection: 'row'}}>
+                    <View style={{ justifyContent: 'center', height: '100%', marginHorizontal: 10 }}>
+                        <Ionicons
+                            name="ios-image"
+                            size={28}
+                            color={colors.primary}
+                            
+                            onPress={() => {
+                                Keyboard.dismiss();
+                                this.pickImage();
+                            }}
+                        />
+                    </View>
+                    <InputToolbar 
+                        {...props}
+                        containerStyle={{
+                            marginHorizontal: 12,
+                            borderTopWidth: 0,
+                            backgroundColor: '#f2f2f2',
+                            borderRadius: 30,
+                            paddingHorizontal: 15,
+                            //marginLeft: 40,
+                            //width: '100%',
+                            position: 'relative',
+                            
+                        }}
+                    />
+                </View>
             </View>
         );
     }
@@ -607,14 +799,14 @@ export default class ChatScreen extends React.Component {
                 justifyContent: 'center'
             }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                    <Ionicons
-                        name="ios-image"
-                        size={30}
+                    <MaterialCommunityIcons
+                        name="sticker-emoji"
+                        size={28}
                         color={colors.primary}
-                        style={styles.addImageIcon}
+                        style={styles.addImageIcon}                        
                         onPress={() => {
                             Keyboard.dismiss();
-                            this.pickImage();
+                            this.setState({ stickersContainerVisible: true });
                         }}
                     />
                     <Composer
@@ -625,9 +817,10 @@ export default class ChatScreen extends React.Component {
                             backgroundColor: '#f2f2f2',
                             paddingHorizontal: 15,
                             paddingVertical: 5,
-                            color: 'black'
+                            color: 'black',
                         }}
                     />
+                    
                 </View>
             </View>
         );
@@ -822,11 +1015,24 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-end',
         color: '#a1a1a1',
         marginRight: 12,
-        fontSize: 13
+        fontSize: 13,
+        marginTop: -10
     },
     addImageIcon: {
         //marginTop: 8,
         alignSelf: 'center',
         marginLeft: 7
+    },
+    avatarWrapper: {
+        height: 36,
+        width: 36,
+        borderWidth: 1,
+        borderColor: '#a1a1a1',
+        borderRadius: 18,
+        elevation: 2,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#a1a1a1',
+        marginLeft: 10
     }
 });

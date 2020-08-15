@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Text, TouchableNativeFeedback } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import colors from '../../../constans/colors';
 
 export default class GameSelectionScreen extends React.Component {
 
@@ -8,7 +9,7 @@ export default class GameSelectionScreen extends React.Component {
         const { selectedPerson } = this.props.route.params;
         return (
             <LinearGradient
-                colors={['rgba(247,106,63,1) 100%', 'rgba(252,95,52,1) 90%', 'rgba(248,40,45,1) 5%', '90deg, rgba(242,33,53,1) 0%']}
+                colors={colors.gradient}
                 style={ this.styles.container }
             >
                 <Text style={this.styles.userName}>Wybiera, { selectedPerson }</Text>

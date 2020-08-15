@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { TouchableNativeFeedback } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
 import Timer from '../../components/game/Timer';
+import colors from '../../../constans/colors';
 
 // soft stuff
 import { softQuestionsForFemale } from '../../../assets/game/soft/softQuestionsForFemale';
@@ -31,7 +32,7 @@ export default class GameCardScreen extends React.Component {
         const { text, seconds, minutes, timer } = this.state;
         return(
              <LinearGradient
-                colors={['rgba(247,106,63,1) 100%', 'rgba(252,95,52,1) 90%', 'rgba(248,40,45,1) 5%', '90deg, rgba(242,33,53,1) 0%']}
+                colors={colors.gradient}
                 style={ this.styles.container }
             >
                 {timer &&
@@ -64,27 +65,27 @@ export default class GameCardScreen extends React.Component {
         const { navigation } = this.props;
         navigation.addListener('focus', () => {
             if(this.state.text) return;
-            
             const { selectedPerson, genderInfo, category, level } = this.props.route.params;
+            
             // choose texts to level
             let questionsForMale, questionsForFemale, daresForMale, daresForFemale;
-            if(level === 'normalne') {
-                if(this.state.level !== 'normalne') { // if level changed
+            if(level === 'soft') {
+                if(this.state.level !== 'soft') { // if level changed
                     questionsForMale = softQuestionsForMale;
                     questionsForFemale = softQuestionsForFemale;
                     daresForMale = softDaresForMale;
                     daresForFemale = softDaresForFemale;
                 }
-                this.setState({ level: 'normalne' });
+                this.setState({ level: 'soft' });
             }
-            if(level === 'gorące') {
-                if(this.state.level !== 'gorące') { // if level changed
+            if(level === 'hot') {
+                if(this.state.level !== 'hot') { // if level changed
                     questionsForMale = hotQuestionsForMale;
                     questionsForFemale = hotQuestionsForFemale;
                     daresForMale = hotDaresForMale;
                     daresForFemale = hotDaresForFemale;
                 }
-                this.setState({ level: 'gorące' });
+                this.setState({ level: 'hot' });
             }
 
             const genderOfSelectedPerson = genderInfo[selectedPerson];

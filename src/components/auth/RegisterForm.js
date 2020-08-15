@@ -88,7 +88,8 @@ const RegisterForm = props => {
             <Input
                 placeholder="hasło"
                 onChangeTextHandler={setPassword}
-                secureTextEntry={true}   
+                secureTextEntry={true}
+                autoCapitalize="none"                
             />
             <SignButton
                 title="zarejestruj się"

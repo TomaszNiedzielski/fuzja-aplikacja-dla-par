@@ -20,14 +20,14 @@ export default class WaitingForPartnerScreen extends React.Component {
     render() {
         return (
             <LinearGradient
-                colors={[colors.primary, colors.accent]}
+                colors={colors.gradient}
                 style={styles.container}
             >
                 <View style={{ elevation: 10, borderRadius: 20, padding: 30 }}>
                     <Text style={styles.info}>
-                        Zaczekaj, aż twój partner wprowadzi twój e-mail.
-                        Wtedy zostaniesz przekierowany(a) do twojego pulpitu. 
-                        Jeżeli tak się nie stało, spróbuj otworzyć aplikacje ponownie.
+                        Zaczekaj, aż twój partner wprowadzi Twój e-mail.
+                        Wtedy zostaniesz przekierowany(a) do Twojego pulpitu. 
+                        Jeżeli tak się nie stanie, spróbuj otworzyć aplikację ponownie.
                     </Text>
                     <Text style={{ marginTop: 20, color: '#e8e8e8', fontSize: 16  }} onPress={() => {this.props.navigation.navigate('SearchPartner')}}>Jeżeli wpisany e-mail jest niepoprawny kliknij tutaj, żeby wrócić.</Text>
                 </View>

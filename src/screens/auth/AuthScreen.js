@@ -15,7 +15,7 @@ const AuthScreen = props => {
 
     return (
         <LinearGradient
-            colors={['rgba(247,106,63,1) 100%', 'rgba(252,95,52,1) 90%', 'rgba(248,40,45,1) 5%', '90deg, rgba(242,33,53,1) 0%']}
+            colors={colors.gradient}
             style={ styles.container }
         >
             <TouchableWithoutFeedback

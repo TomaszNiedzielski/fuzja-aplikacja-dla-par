@@ -1,6 +1,12 @@
 import React from 'react';
 import { View, Text, Modal, StyleSheet, TouchableWithoutFeedback, TouchableNativeFeedback, Dimensions } from 'react-native';
 
+import { LinearGradient } from 'expo-linear-gradient';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
+import colors from '../../../constans/colors';
+
 export default class SelectPicker extends React.Component {
 
     state = {
@@ -11,13 +17,14 @@ export default class SelectPicker extends React.Component {
 
     render() {
         const { selectedOption, options, visibleModal } = this.state;
+        let Icon, optionTitle, Padlock;
         return(
             <>
                 <TouchableWithoutFeedback
                     onPress={() => this.setState({ visibleModal: true })}
                 >   
-                    <View style={[styles.textInput, this.props.inputStyle]}>
-                        <Text style={this.props.selectedStyle}>{this.props.label ? this.props.label : ''}{selectedOption ? selectedOption : 'Wybierz kategorię...'}</Text>
+                    <View style={styles.textInput}>
+                        <Text style={styles.selectedStyle}>{this.props.label ? this.props.label : ''}{selectedOption ? selectedOption : 'Wybierz kategorię...'}</Text>
                     </View>
                 </TouchableWithoutFeedback>
 
@@ -32,6 +39,16 @@ export default class SelectPicker extends React.Component {
                     <View style={styles.modalContent}>
                         {options.length > 0 &&
                             options.map(option => {
+                                if(option === 'soft') {
+                                    //optionTitle = 'lekkie';
+                                    Icon = () => { return <MaterialCommunityIcons name="heart" size={24} color="red" /> }
+                                    Padlock = () => { return <FontAwesome5 name="lock-open" size={24} color="white" /> }
+                                }
+                                if(option === 'hot') {
+                                    //optionTitle = 'gorące';
+                                    Icon = () => { return <MaterialCommunityIcons name="fire" size={24} color="red" /> }
+                                    Padlock = () => { return <FontAwesome5 name="lock-open" size={24} color="white" /> }                                    
+                                }
                                 return(
                                     <TouchableNativeFeedback
                                         key={option}
@@ -40,9 +57,19 @@ export default class SelectPicker extends React.Component {
                                             this.props.onChangeOption(option);
                                         }}
                                     >
-                                        <View>
-                                            <Text style={styles.option}>{option}</Text>
-                                        </View>
+                                        <LinearGradient
+                                            colors={colors.gradient}
+                                            start={{ x: 1, y: 1 }}
+                                            end={{ x: 0, y: 1 }}
+                                        >
+                                            <View style={styles.optionWrapper}>
+                                                <View style={{ flexDirection: 'row' }}>
+                                                    <Icon />
+                                                    <Text style={styles.option}>{option}</Text>
+                                                </View>
+                                                <Padlock />
+                                            </View>
+                                        </LinearGradient>
                                     </TouchableNativeFeedback>
                                 )
                             })
@@ -64,11 +91,13 @@ export default class SelectPicker extends React.Component {
 
 const styles = StyleSheet.create({
     textInput: {
-        borderWidth: 1,
         color: 'black',
-        borderRadius: 10,
-        padding: 10,
-        width: '80%'
+        //borderRadius: 10,
+        borderColor: 'white',
+        borderBottomWidth: 2,
+        padding: 10,        
+        width: '90%',
+        marginTop: 10
     },
     modalContent: {
         width: '80%',
@@ -89,8 +118,20 @@ const styles = StyleSheet.create({
         right: 0,
         backgroundColor: 'rgba(0,0,0,0.5)'
     },
-    option: {
+    optionWrapper: {
         padding: 15,
-        fontSize: 18
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+    option: {
+        fontSize: 18,
+        color: 'white',
+        fontWeight: 'bold',
+        marginLeft: 5
+    },
+    selectedStyle: {
+        color: 'white',
+        fontSize: 16
     }
 });

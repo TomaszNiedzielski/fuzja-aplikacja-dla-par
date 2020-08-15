@@ -29,20 +29,20 @@ export default class SettingsScreen extends React.Component {
                 <ScrollView>
                     <View style={styles.itemContainer}>
                         <Text style={styles.itemTitle}>Aplikacja</Text>
-                        <Text style={styles.itemText}>nazwa: fuzja</Text>
-                        <Text style={styles.itemText}>wersja: 1.0.3</Text>
+                        <Text style={styles.itemText}>Nazwa: Fuzja</Text>
+                        <Text style={styles.itemText}>Wersja: 1.0.5</Text>
                     </View>
                     <View style={styles.itemContainer}>
                         <Text style={styles.itemTitle}>Użytkownik</Text>
-                        <Text style={styles.itemText}>imię: {userName}</Text>
+                        <Text style={styles.itemText}>Imię: {userName}</Text>
                         <Text style={styles.itemText}>e-mail: {userEmail}</Text>
                         <TouchableOpacity onPress={() => this.props.navigation.navigate('ChangeAvatar')}>
-                            <Text style={styles.itemText}>zmień zdjęcie profilowe</Text>
+                            <Text style={styles.itemText}>Zmień zdjęcie profilowe</Text>
                         </TouchableOpacity>
                     </View>
                     <View style={styles.itemContainer}>
                         <Text style={styles.itemTitle}>Partner</Text>
-                        <Text style={styles.itemText}>imię: {partnerName}</Text>
+                        <Text style={styles.itemText}>Imię: {partnerName}</Text>
                         <Text style={styles.itemText}>e-mail: {partnerEmail}</Text>
                     </View>
                     <View style={styles.itemContainer}>
@@ -52,7 +52,7 @@ export default class SettingsScreen extends React.Component {
                                 this.props.navigation.navigate('SaveImportantDatesScreen');
                             }}
                         >
-                            <Text style={styles.itemText}>ważne daty</Text>
+                            <Text style={styles.itemText}>Ważne daty</Text>
                         </TouchableOpacity>                    
                     </View>
                     <View style={styles.itemContainer}>
@@ -62,7 +62,7 @@ export default class SettingsScreen extends React.Component {
                                 this.props.navigation.navigate('ChangeDesktop');
                             }}
                         >
-                            <Text style={styles.itemText}>zmień tło pulpitu</Text>
+                            <Text style={styles.itemText}>Zmień tło pulpitu</Text>
                         </TouchableOpacity>
                     </View>
                     <View style={styles.itemContainer}>
@@ -103,7 +103,7 @@ export default class SettingsScreen extends React.Component {
 
         const partnerDataInJson = await AsyncStorage.getItem('partnerData');
         const partnerData = JSON.parse(partnerDataInJson);
-        
+
         const accessCode = await AsyncStorage.getItem('accessCode');
 
         this.setState({

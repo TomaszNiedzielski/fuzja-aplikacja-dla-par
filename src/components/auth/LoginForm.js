@@ -68,12 +68,13 @@ const LoginForm = props => {
                 onChangeTextHandler={setEmail}
                 autoCompleteType="email"
                 keyboardType="email-address"
-                autoCapitalize="none"                
+                autoCapitalize="none"
             />
             <Input
                 placeholder="hasło"
                 onChangeTextHandler={setPassword}
                 secureTextEntry={true}
+                autoCapitalize="none"                
             />
             <SignButton 
                 title="zaloguj się"

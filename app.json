@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "fuzja",
-    "slug": "fuzja",
+    "name": "Fuzja",
+    "slug": "Fuzja",
     "privacy": "public",
     "sdkVersion": "36.0.0",
     "platforms": [
@@ -9,11 +9,11 @@
       "android",
       "web"
     ],
-    "version": "1.0.4",
+    "version": "1.0.5",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/fuzja_icon.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/fuzja_splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -28,8 +28,10 @@
     },
     "android": {
       "package": "com.fuzja.fuzja",
-      "versionCode": 4,
-      "enableDangerousExperimentalLeanBuilds": true
+      "versionCode": 5
+    },
+    "notification": {
+      "icon": "./assets/fuzja_icon.png"
     }
   }
 }

@@ -29,7 +29,7 @@ export default class GameStartScreen extends React.Component {
         const { userName, userGender, partnerName, partnerGender, showInfo, level } = this.state;
         return (
             <LinearGradient
-                colors={['rgba(247,106,63,1) 100%', 'rgba(252,95,52,1) 90%', 'rgba(248,40,45,1) 5%', '90deg, rgba(242,33,53,1) 0%']}
+                colors={colors.gradient}
                 style={ styles.container }
             >
                 <Text style={[styles.title, { fontFamily: 'KaushanScript-Regular' }]}>Prawda czy Wyzwanie?</Text>
@@ -50,19 +50,9 @@ export default class GameStartScreen extends React.Component {
                 }
                 {level &&
                 <SelectPicker 
-                    options={['normalne', 'gorące']}
+                    options={['soft', 'hot']}
                     selectedOption={level}
                     label='poziom trudności - '
-                    inputStyle={{
-                        borderColor: 'white',
-                        borderWidth: 2,
-                        width: '90%',
-                        marginTop: 10
-                    }}
-                    selectedStyle={{
-                        color: 'white',
-                        fontSize: 16
-                    }}
                     onChangeOption={level => {
                         this.setState({ level: level });
                         this.saveLevel(level);
@@ -137,7 +127,7 @@ export default class GameStartScreen extends React.Component {
     async restoreLevel() {
         const level = await AsyncStorage.getItem('gameLevel');
 
-        this.setState({ level: level ? level : 'normalne' });
+        this.setState({ level: level ? level : 'soft' });
     }
 
 }
@@ -158,7 +148,7 @@ const styles = StyleSheet.create({
         textShadowRadius: 10,
     },
     button: {
-        padding: 8,
+        padding: 12,
         borderWidth: 4,
         borderColor: 'white',
         borderRadius: 50,
@@ -178,6 +168,7 @@ const styles = StyleSheet.create({
     info: {
         fontSize: 17,
         textAlign: 'center',
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        color: 'white',
     }
 });

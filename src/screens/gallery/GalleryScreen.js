@@ -101,7 +101,7 @@ export default class GalleryScreen extends React.Component {
                     this.props.navigation.setParams({ added: null });
                 }
             }
-            this.loadImages();
+            //this.loadImages();
         });
     }
 
@@ -141,9 +141,10 @@ export default class GalleryScreen extends React.Component {
                 //save in asyncstorage
                 await AsyncStorage.setItem('galleryImages', JSON.stringify(responseJson.gallery_images));
             }
-            this.setState({ refreshControl: false });            
+            this.setState({ refreshControl: false });
         })
         .catch((error) => {
+            this.setState({ refreshControl: false });
             throw (error);
         });
     }

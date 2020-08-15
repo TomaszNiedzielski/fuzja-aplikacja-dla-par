@@ -40,7 +40,7 @@ export default class SearchPartnerScreen extends React.Component {
         const { email, requestProcessing } = this.state;
         return (
             <LinearGradient
-                colors={[colors.primary, colors.accent]}
+                colors={colors.gradient}
                 style={ styles.container }
             >
                 <TouchableWithoutFeedback
@@ -51,11 +51,14 @@ export default class SearchPartnerScreen extends React.Component {
                         keyboardVerticalOffset={30}
                         style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}
                     >
-                        <View style={{ width: '90%' }}>
+                        <View style={{ width: '80%' }}>
                             <ScrollView
                                 contentContainerStyle={styles.scroll}
                                 keyboardShouldPersistTaps='handled'
                             >
+                                <View style={{marginTop: 40}} />
+                                <Text style={[styles.title, {fontSize: 22, fontWeight: 'bold'}]}>Ostatni krok 2/2</Text>
+                                <Text style={styles.title}>Poczekaj, aż twój partner założy konto w aplikacji. Następnie wymieńcie się podanymi przy rejestracji adresami e-mail, żeby się połączyć.</Text>
                                 <TextInput
                                     placeholder="e-mail twojego partnera..."
                                     placeholderTextColor="white"
@@ -161,7 +164,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         maxWidth: '100%',
         textAlign: 'center',
-        marginTop: 70,
+        marginTop: 30,
         borderBottomColor: 'white',
         borderBottomWidth: 2,
         padding: 8,
@@ -189,5 +192,9 @@ const styles = StyleSheet.create({
         bottom: 10,
         width: '90%',
         alignItems: 'flex-end'
+    },
+    title: {
+        color: 'white',
+        fontSize: 18,
     }
 });
