@@ -3,7 +3,7 @@
     "name": "Fuzja",
     "slug": "Fuzja",
     "privacy": "public",
-    "sdkVersion": "36.0.0",
+    "sdkVersion": "38.0.0",
     "platforms": [
       "ios",
       "android",
@@ -27,7 +27,7 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "com.fuzja.fuzja",
+      "package": "com.fuzja_company.fuzja",
       "versionCode": 5
     },
     "notification": {
